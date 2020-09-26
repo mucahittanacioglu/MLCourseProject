@@ -64,7 +64,7 @@ Theta2_grad = zeros(size(Theta2));
 
 
 
-%---Forward Prop-----
+%---ForwardProp---------------------------
 a1 = [ones(m, 1) X];
 
 z2 = a1 * Theta1';
@@ -74,14 +74,26 @@ a2 = [ones(m, 1) a2];
 z3 = a2 * Theta2';
 hypo = sigmoid(z3);
 
+%%representing y as vector instead of label(ex:2=[0 1 0...0])
 extendedY = repmat([1:num_labels], m, 1);
 y= extendedY==y;
 
+%%calculating cost function for NN without regularization
 J= sum((1/m)*sum(-y.*log(hypo)-(1-y).*log(1-hypo)));
 
-
-
-% -------------------------------------------------------------
+%adding regularization to cost function
+Theta1_Without_Bias=Theta1(:,2:end);
+Theta2_Without_Bias=Theta2(:,2:end);
+%regularization value
+regVal=0;
+for i=1:hidden_layer_size
+regVal=regVal+sum(Theta1_Without_Bias(i,:).^2);
+end
+for i=1:num_labels
+regVal=regVal+sum(Theta2_Without_Bias(i,:).^2);
+end
+J=J+lambda/(2*m)*regVal;
+% -------------------------------------------------------------------------
 
 % =========================================================================
 
